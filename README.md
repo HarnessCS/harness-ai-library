@@ -1,4 +1,4 @@
-# Harness AI Prompt Library
+# Harness AI Library
 
 A curated, searchable library of AI prompts for the Harness platform. Designed for DevOps, FinOps, security, reliability, and platform engineering teams to get the most out of Harness AI agents.
 
@@ -104,7 +104,7 @@ A password-protected admin panel with:
 
 ```bash
 git clone <repository-url>
-cd harness-ai-prompt-library
+cd harness-ai-library
 pnpm install
 ```
 
@@ -136,7 +136,7 @@ No environment variables are required — all prompt data is embedded directly i
 ## Project Structure
 
 ```
-harness-ai-prompt-library/
+harness-ai-library/
 ├── app/
 │   ├── layout.tsx              # Root layout with theme provider
 │   ├── page.tsx                # Main library page (search, filters, grid)

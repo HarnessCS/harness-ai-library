@@ -1,4 +1,4 @@
-# Contributing to the Harness AI Prompt Library
+# Contributing to the Harness AI Library
 
 Thank you for helping grow this library! This guide covers everything you need to add new prompts, fix existing ones, or propose new use cases.
 
@@ -19,8 +19,8 @@ Thank you for helping grow this library! This guide covers everything you need t
 ## Getting started
 
 ```bash
-git clone https://github.com/adeebvaliulla/harness-ai-prompt-library.git
-cd harness-ai-prompt-library
+git clone https://github.com/dewan-ahmed/harness-ai-library.git
+cd harness-ai-library
 npm install
 npm run dev        # http://localhost:3000
 ```

@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { Search, X, Sparkles, Bot, ChevronDown, ChevronUp, SlidersHorizontal } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
+import { WorkerAgentBrowser } from '@/components/worker-agent-browser'
 import { PromptCard } from '@/components/prompt-card'
 import { PromptModal } from '@/components/prompt-modal'
 import { Input } from '@/components/ui/input'
@@ -110,13 +111,22 @@ export default function HomePage() {
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [bannerDismissed, setBannerDismissed] = useState(true)
+  const [library, setLibrary] = useState<'prompts' | 'agents'>('prompts')
   const [customerContext, setCustomerContext] = useState<CustomerContext>(loadContext)
   const searchRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const dismissed = localStorage.getItem('harness-banner-dismissed')
     if (!dismissed) setBannerDismissed(false)
+    if (new URLSearchParams(window.location.search).get('view') === 'agents') {
+      setLibrary('agents')
+    }
   }, [])
+
+  function setLibraryView(next: 'prompts' | 'agents') {
+    setLibrary(next)
+    window.history.replaceState(null, '', next === 'agents' ? '/?view=agents' : '/')
+  }
 
   const dismissBanner = () => {
     setBannerDismissed(true)
@@ -246,8 +256,12 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
+      <Navbar library={library} onLibraryChange={setLibraryView} />
 
+      {library === 'agents' ? (
+        <WorkerAgentBrowser />
+      ) : (
+      <>
       {/* First-run banner */}
       {!bannerDismissed && (
         <div className="bg-[var(--harness-blue)]/5 border-b border-[var(--harness-blue)]/20 px-4 md:px-6 py-3">
@@ -597,6 +611,8 @@ export default function HomePage() {
         customerContext={customerContext}
         contextVarMap={CONTEXT_VAR_MAP}
       />
+      </>
+      )}
     </div>
   )
 }

@@ -7,8 +7,8 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
 
 export const metadata: Metadata = {
-  title: 'Harness AI Prompt Library',
-  description: 'Curated AI prompts for every Harness module — search, customize, and copy in seconds.',
+  title: 'Harness AI Library',
+  description: 'Search Harness AI prompts and worker agents, then copy a prompt or pipeline YAML.',
   icons: {
     icon: 'https://cdn.prod.website-files.com/6222ca42ea87e1bd1aa1d10c/6897b6098fe3070c39218537_Harness%20AI.svg',
   },
