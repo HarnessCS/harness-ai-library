@@ -9,6 +9,8 @@ export type WorkerAgentRecord = {
   linkType: WorkerAgentLinkType
   harnessAgentId: string
   ownership: string
+  lifecycle: string[]
+  modules: string[]
   pipelineName: string
   pipelineYaml: string
   agentYaml: string
@@ -70,10 +72,18 @@ export function agentConsoleUrl(agent: WorkerAgentRecord, scope: HarnessScope) {
   return `https://app.harness.io/ng/account/${accountId}/all/ai-agents/orgs/${orgId}/projects/${projectId}/agents/${agentId}?type=${agent.linkType}`
 }
 
-export function filterWorkerAgents(agents: WorkerAgentRecord[], query: string) {
+export function filterWorkerAgents(
+  agents: WorkerAgentRecord[],
+  query: string,
+  ownership: string[] = [],
+  lifecycle: string[] = [],
+) {
+  let result = agents
+  if (ownership.length > 0) result = result.filter(agent => ownership.includes(agent.ownership))
+  if (lifecycle.length > 0) result = result.filter(agent => agent.lifecycle.some(stage => lifecycle.includes(stage)))
   const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
-  if (tokens.length === 0) return agents
-  return agents.filter(agent => {
+  if (tokens.length === 0) return result
+  return result.filter(agent => {
     const haystack = [
       agent.name,
       agent.summary,
@@ -81,6 +91,8 @@ export function filterWorkerAgents(agents: WorkerAgentRecord[], query: string) {
       agent.pipelineName,
       agent.ownership,
       agent.id,
+      ...agent.lifecycle,
+      ...agent.modules,
       ...agent.keywords,
     ].join(' ').toLowerCase()
     return tokens.every(token => haystack.includes(token))
