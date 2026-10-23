@@ -1,5 +1,5 @@
 // Mutable in-memory prompt store.
-// Initialized from static data. Admin CRUD changes are reflected here.
+// Initialized from static data. Writes from the prompts API are reflected here.
 // Replace with Supabase for persistence across restarts.
 
 import { Prompt } from './types'

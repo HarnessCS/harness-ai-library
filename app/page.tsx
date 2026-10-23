@@ -12,11 +12,11 @@ import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import {
-  Prompt, AgentType, AGENT_LABELS, AGENT_COLORS, CustomerContext,
+  Prompt, AgentType, AGENT_LABELS, CustomerContext,
   SdlcStage, PromptComplexity, SituationType,
-  SDLC_STAGE_LABELS, SDLC_STAGE_COLORS,
-  COMPLEXITY_LABELS, COMPLEXITY_COLORS,
-  SITUATION_LABELS, SITUATION_COLORS,
+  SDLC_STAGE_LABELS,
+  COMPLEXITY_LABELS,
+  SITUATION_LABELS,
 } from '@/lib/types'
 import { getAllPrompts, getModules } from '@/lib/data'
 import { cn } from '@/lib/utils'
@@ -58,9 +58,9 @@ function FilterSection({
 
 // ── Reusable checkbox-style filter item ──────────────────────────────────────
 function FilterItem({
-  label, count, selected, color, onToggle,
+  label, count, selected, onToggle,
 }: {
-  label: string; count: number; selected: boolean; color?: string; onToggle: () => void
+  label: string; count: number; selected: boolean; onToggle: () => void
 }) {
   return (
     <button
@@ -72,26 +72,7 @@ function FilterItem({
           : 'text-[var(--sidebar-foreground)]/60 hover:text-[var(--sidebar-foreground)]'
       )}
     >
-      <span className="flex items-center gap-2 truncate">
-        <span
-          className={cn(
-            'h-3 w-3 rounded border shrink-0 flex items-center justify-center transition-colors',
-            selected
-              ? 'border-[var(--harness-blue)] bg-[var(--harness-blue)]'
-              : 'border-white/25'
-          )}
-        >
-          {selected && (
-            <svg viewBox="0 0 8 8" className="h-2 w-2">
-              <path d="M1.5 4L3 5.5L6.5 2" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
-        </span>
-        {color && (
-          <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
-        )}
-        <span className="truncate">{label}</span>
-      </span>
+      <span className="truncate">{label}</span>
       <span className="text-[10px] opacity-50 font-mono shrink-0 ml-1">{count}</span>
     </button>
   )
@@ -264,10 +245,10 @@ export default function HomePage() {
       <>
       {/* First-run banner */}
       {!bannerDismissed && (
-        <div className="bg-[var(--harness-blue)]/5 border-b border-[var(--harness-blue)]/20 px-4 md:px-6 py-3">
+        <div className="bg-white border-b border-[#e6e8ee] px-4 md:px-6 py-3">
           <div className="flex items-start justify-between gap-4 max-w-5xl">
             <div className="flex items-start gap-3">
-              <Bot className="h-5 w-5 text-[var(--harness-blue)] shrink-0 mt-0.5" />
+              <Bot className="h-5 w-5 text-[#5a5a62] shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-semibold text-foreground">How to use this library</p>
                 <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
@@ -344,7 +325,6 @@ export default function HomePage() {
                     label={mod.shortName}
                     count={moduleCounts[mod.id] ?? 0}
                     selected={selectedModules.includes(mod.id)}
-                    color={mod.color}
                     onToggle={() => toggleModule(mod.id)}
                   />
                 ))}
@@ -360,7 +340,6 @@ export default function HomePage() {
                     label={AGENT_LABELS[agentId]}
                     count={agentCounts[agentId] ?? 0}
                     selected={selectedAgents.includes(agentId)}
-                    color={AGENT_COLORS[agentId]}
                     onToggle={() => toggleAgent(agentId)}
                   />
                 ))}
@@ -376,7 +355,6 @@ export default function HomePage() {
                     label={COMPLEXITY_LABELS[c]}
                     count={complexityCounts[c] ?? 0}
                     selected={selectedComplexities.includes(c)}
-                    color={COMPLEXITY_COLORS[c]}
                     onToggle={() => toggleComplexity(c)}
                   />
                 ))}
@@ -419,14 +397,10 @@ export default function HomePage() {
                     className={cn(
                       'shrink-0 h-8 text-xs px-2',
                       selectedModules.includes(mod.id) &&
-                        'bg-[var(--harness-blue)] hover:bg-[var(--harness-blue-dark)] text-white border-0'
+                        'bg-[#111111] hover:bg-black text-white border-0'
                     )}
                     onClick={() => toggleModule(mod.id)}
                   >
-                    <span
-                      className="h-1.5 w-1.5 rounded-full mr-1"
-                      style={{ backgroundColor: selectedModules.includes(mod.id) ? 'white' : mod.color }}
-                    />
                     {mod.shortName}
                   </Button>
                 ))}
@@ -441,20 +415,12 @@ export default function HomePage() {
                 </span>
                 {selectedSituation && (
                   <Badge variant="secondary" className="gap-1 text-[10px] py-0.5 h-auto">
-                    <span
-                      className="h-1.5 w-1.5 rounded-full shrink-0"
-                      style={{ backgroundColor: SITUATION_COLORS[selectedSituation] }}
-                    />
                     {SITUATION_LABELS[selectedSituation]}
                     <button onClick={() => setSelectedSituation(null)}><X className="h-2.5 w-2.5" /></button>
                   </Badge>
                 )}
                 {selectedStage && (
                   <Badge variant="secondary" className="gap-1 text-[10px] py-0.5 h-auto">
-                    <span
-                      className="h-1.5 w-1.5 rounded-full shrink-0"
-                      style={{ backgroundColor: SDLC_STAGE_COLORS[selectedStage] }}
-                    />
                     {SDLC_STAGE_LABELS[selectedStage]}
                     <button onClick={() => setSelectedStage(null)}><X className="h-2.5 w-2.5" /></button>
                   </Badge>
@@ -463,7 +429,6 @@ export default function HomePage() {
                   const mod = modules.find(m => m.id === mId)
                   return mod ? (
                     <Badge key={mId} variant="secondary" className="gap-1 text-[10px] py-0.5 h-auto">
-                      <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: mod.color }} />
                       {mod.shortName}
                       <button onClick={() => toggleModule(mId)}><X className="h-2.5 w-2.5" /></button>
                     </Badge>
@@ -471,14 +436,12 @@ export default function HomePage() {
                 })}
                 {selectedAgents.map(aId => (
                   <Badge key={aId} variant="secondary" className="gap-1 text-[10px] py-0.5 h-auto">
-                    <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: AGENT_COLORS[aId] }} />
                     {AGENT_LABELS[aId]}
                     <button onClick={() => toggleAgent(aId)}><X className="h-2.5 w-2.5" /></button>
                   </Badge>
                 ))}
                 {selectedComplexities.map(c => (
                   <Badge key={c} variant="secondary" className="gap-1 text-[10px] py-0.5 h-auto">
-                    <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: COMPLEXITY_COLORS[c] }} />
                     {COMPLEXITY_LABELS[c]}
                     <button onClick={() => toggleComplexity(c)}><X className="h-2.5 w-2.5" /></button>
                   </Badge>
@@ -515,7 +478,6 @@ export default function HomePage() {
               </button>
               {SDLC_STAGES.map(stage => {
                 const isActive = selectedStage === stage
-                const color = SDLC_STAGE_COLORS[stage]
                 return (
                   <button
                     key={stage}
@@ -523,10 +485,9 @@ export default function HomePage() {
                     className={cn(
                       'shrink-0 text-xs font-medium px-3 py-1 rounded-full transition-all whitespace-nowrap',
                       isActive
-                        ? 'text-white'
+                        ? 'bg-foreground text-background'
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                     )}
-                    style={isActive ? { backgroundColor: color } : {}}
                   >
                     {SDLC_STAGE_LABELS[stage]} <span className="opacity-60">{stageCounts[stage] ?? 0}</span>
                   </button>
@@ -586,7 +547,7 @@ export default function HomePage() {
                 <>
                   {!hasActiveFilters && (
                     <div className="mb-5 flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-[var(--harness-blue)]" />
+                      <Sparkles className="h-4 w-4 text-[#5a5a62]" />
                       <h2 className="text-sm font-semibold text-foreground">
                         {allPrompts.length} prompts across {modules.length} modules
                       </h2>

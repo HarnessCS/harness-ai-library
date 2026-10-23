@@ -13,9 +13,9 @@ The header switch, **Prompts | Worker Agents**, changes the results without leav
 
 Prompts cover the software delivery lifecycle: pipeline creation, cloud cost, incident response, chaos engineering, and the rest. Each one has `{{variable}}` placeholders. A modal fills those from the customer context panel, then copies the prompt into chat.
 
-Worker Agents use the same layout as prompts: a search bar, stage filters, and a card grid. A card shows the name and summary. Opening it shows the YAML. **Agent | Pipeline** switches that preview. The clipboard icon copies whichever one is showing. **Open in Harness** builds a console link after you enter an account, org, and project. Those values stay in this browser and also replace `{{orgId}}` and `{{projectId}}` in the copied YAML.
+Worker Agents use the same layout as prompts: a search bar, stage filters, and a card grid. A card shows the name and summary. Opening it shows the YAML. **Agent | Pipeline** switches that preview. The clipboard icon copies whichever one is showing. Marketplace agents use **Open in Harness**, which opens that agent in the project. Custom agents use **Create on Harness**, which opens the create page. Both links need an account, org, and project. Those values stay in this browser and also replace `{{orgId}}` and `{{projectId}}` in the copied YAML.
 
-The catalog has 47 worker agents, each paired with one pipeline. Marketplace agents open as `type=system`. Custom agents open as `type=custom`. The link only works when that agent already exists in the project.
+The catalog has 47 worker agents, each paired with one pipeline. Marketplace agents open at `.../worker-agents/{id}?type=system`. Custom agents open at `.../worker-agents?action=create`.
 
 ---
 
@@ -25,7 +25,7 @@ The catalog has 47 worker agents, each paired with one pipeline. Marketplace age
 - **Same browse layout as prompts** — search, stage filters, and a card grid
 - **Search** across agent name, summary, description, pipeline name, and keywords
 - **Open a card** to preview YAML. **Agent | Pipeline** switches the preview, and the clipboard icon copies what is showing
-- **Open in Harness** deep-links to `app.harness.io` for that agent
+- **Open in Harness** opens a marketplace agent in the project. **Create on Harness** opens the custom-agent create page
 
 ### Prompt Discovery
 - **Full-text search** across prompt titles, descriptions, and tags
@@ -77,15 +77,6 @@ A collapsible right-side panel where users configure their environment details o
 - Repository name
 
 These values auto-populate into matching prompt variables on every prompt.
-
-### Admin Dashboard (`/admin`)
-A password-protected admin panel with:
-- **Analytics overview** — total copies, total searches, total prompts
-- **Top prompts** — ranked list of most-copied prompts
-- **Module breakdown** — pie chart of copies by Harness module
-- **Copy trend** — line chart of daily copy activity over 30 days
-- **Prompt management** — CRUD interface to create, edit, and delete prompts
-- **Search term tracking** — recent search queries
 
 ---
 
@@ -152,8 +143,6 @@ harness-ai-library/
 ├── app/
 │   ├── layout.tsx              # Root layout with theme provider
 │   ├── page.tsx                # Prompts view, plus the Worker Agents switch
-│   ├── admin/
-│   │   └── page.tsx            # Admin dashboard with analytics + CRUD
 │   └── api/
 │       ├── analytics/
 │       │   └── route.ts        # GET/POST analytics events
@@ -292,7 +281,7 @@ The store is in-memory and resets on server restart. It is designed to be swappe
 - `agentYaml` — the agent definition shown by default
 - `pipelineYaml` — the sample pipeline, shown from the Pipeline toggle
 - `linkType` — `system` for Harness marketplace agents, `custom` for catalog agents
-- `harnessAgentId` — the id used in the Open in Harness URL
+- `harnessAgentId` — the id used in a marketplace agent's Open in Harness URL
 
 Account, org, and project IDs are not in the file. The browser stores them under `harness-ai-library-scope` and substitutes `{{accountId}}`, `{{orgId}}`, and `{{projectId}}` at copy time.
 
@@ -367,21 +356,7 @@ The app includes lightweight in-memory analytics:
 - **Search events** — recorded on every search query with result count
 - **View events** — recorded when prompts are opened in the modal
 
-Analytics data is available via `GET /api/analytics` and displayed in the admin dashboard with charts for trends, top prompts, and module breakdowns.
-
----
-
-## Admin Panel
-
-Navigate to `/admin` to access the admin dashboard.
-
-Features:
-- Summary statistics (total copies, searches, prompts)
-- Top 10 most-copied prompts
-- Copy trend line chart (last 30 days)
-- Module breakdown pie chart
-- Full prompt list with edit and delete actions
-- Create new prompts via a form
+Analytics events are recorded in memory through `POST /api/analytics`.
 
 ---
 

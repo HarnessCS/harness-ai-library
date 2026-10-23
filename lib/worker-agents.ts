@@ -63,13 +63,19 @@ export function applyYamlScope(yaml: string, scope: HarnessScope) {
   return out
 }
 
+export function harnessActionLabel(agent: WorkerAgentRecord) {
+  return agent.linkType === 'custom' ? 'Create on Harness' : 'Open in Harness'
+}
+
 export function agentConsoleUrl(agent: WorkerAgentRecord, scope: HarnessScope) {
   if (!scopeComplete(scope)) return null
   const accountId = encodeURIComponent(scope.accountId.trim())
   const orgId = encodeURIComponent(scope.orgId.trim())
   const projectId = encodeURIComponent(scope.projectId.trim())
+  const base = `https://app.harness.io/ng/account/${accountId}/module/ai-agents/orgs/${orgId}/projects/${projectId}/worker-agents`
+  if (agent.linkType === 'custom') return `${base}?action=create`
   const agentId = encodeURIComponent(agent.harnessAgentId)
-  return `https://app.harness.io/ng/account/${accountId}/all/ai-agents/orgs/${orgId}/projects/${projectId}/agents/${agentId}?type=${agent.linkType}`
+  return `${base}/${agentId}?type=system`
 }
 
 export function filterWorkerAgents(

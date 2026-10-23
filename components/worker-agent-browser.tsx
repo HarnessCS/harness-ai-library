@@ -24,6 +24,7 @@ import {
   scopeComplete,
   applyYamlScope,
   agentConsoleUrl,
+  harnessActionLabel,
   filterWorkerAgents,
 } from '@/lib/worker-agents'
 
@@ -242,7 +243,12 @@ export function WorkerAgentBrowser() {
                     <span className="text-[10px] font-semibold uppercase tracking-wide text-[#5a5a62]">
                       {ownershipLabel(agent.ownership)}
                     </span>
-                    <span className="font-semibold text-sm text-foreground leading-snug line-clamp-2">{agent.name}</span>
+                    <span className="flex items-start gap-2">
+                      {agent.ownership === 'harness_managed' && (
+                        <img src="/harness-mark.png" alt="" className="mt-0.5 h-4 w-4 shrink-0" />
+                      )}
+                      <span className="font-semibold text-sm text-foreground leading-snug line-clamp-2">{agent.name}</span>
+                    </span>
                     <span className="text-xs text-muted-foreground leading-relaxed line-clamp-3">{agent.summary}</span>
                     <span className="text-[11px] text-muted-foreground mt-auto">{agent.pipelineName}</span>
                   </button>
@@ -266,12 +272,12 @@ export function WorkerAgentBrowser() {
             <DialogTitle>Your Harness project</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            These stay in this browser. They fill org and project in copied YAML and build the Open in Harness link.
+            These stay in this browser. They fill org and project in copied YAML and build the Harness link.
           </p>
           <ScopeFields draft={draft} onChange={setDraft} />
           <div className="flex justify-end">
             <Button className="rounded-[10px] bg-[#111111] hover:bg-black text-white" disabled={!scopeComplete(draft)} onClick={confirmScope}>
-              Open in Harness
+              {selected ? harnessActionLabel(selected) : 'Open in Harness'}
             </Button>
           </div>
         </DialogContent>
@@ -313,14 +319,19 @@ function AgentDetail({
 
   return (
     <Dialog open={agent !== null} onOpenChange={open => { if (!open) onClose() }}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="flex max-h-[min(85vh,720px)] w-full flex-col gap-4 overflow-hidden [grid-template-columns:minmax(0,1fr)] sm:max-w-3xl">
         {agent && (
           <>
-            <DialogHeader>
-              <DialogTitle>{agent.name}</DialogTitle>
+            <DialogHeader className="shrink-0">
+              <DialogTitle className="flex items-center gap-2">
+                {agent.ownership === 'harness_managed' && (
+                  <img src="/harness-mark.png" alt="" className="h-5 w-5 shrink-0" />
+                )}
+                {agent.name}
+              </DialogTitle>
             </DialogHeader>
-            <p className="text-sm text-muted-foreground">{agent.summary}</p>
-            <div className="flex items-center justify-between gap-3">
+            <p className="shrink-0 text-sm text-muted-foreground">{agent.summary}</p>
+            <div className="flex shrink-0 items-center justify-between gap-3">
               <div className="flex bg-[#f4f4f5] rounded-[10px] p-0.5" role="tablist" aria-label="YAML preview">
                 {([
                   ['agent', 'Agent'],
@@ -342,20 +353,20 @@ function AgentDetail({
                 ))}
               </div>
               <Button size="sm" variant="outline" className="rounded-[10px] border-[#d9dae5] bg-white" onClick={() => onOpen(agent)}>
-                Open in Harness
+                {harnessActionLabel(agent)}
               </Button>
             </div>
-            <div className="relative">
+            <div className="relative min-h-0 min-w-0">
               <button
                 type="button"
                 onClick={copyYaml}
                 aria-label="Copy to clipboard"
                 title="Copy to clipboard"
-                className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#d6deeb] hover:bg-white/10 hover:text-white"
+                className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#d6deeb] hover:bg-white/10 hover:text-white"
               >
                 {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
               </button>
-              <pre className="max-h-80 overflow-auto rounded-lg bg-[#0f1419] text-[#d6deeb] p-3 pr-10 text-xs leading-relaxed">
+              <pre className="max-h-[min(24rem,50vh)] w-full min-w-0 overflow-auto whitespace-pre rounded-lg bg-[#0f1419] p-3 pr-10 text-xs leading-relaxed text-[#d6deeb]">
                 {yaml}
               </pre>
             </div>
