@@ -5,7 +5,7 @@ import { Copy, Check, ChevronRight, Wrench, Zap, AlertCircle } from 'lucide-reac
 import { toast } from 'sonner'
 import {
   Prompt, Variable,
-  AGENT_LABELS, AGENT_COLORS,
+  AGENT_LABELS,
   AVAILABILITY_LABELS,
   CustomerContext,
 } from '@/lib/types'
@@ -26,7 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
@@ -124,7 +123,6 @@ export function PromptModal({ prompt, open, onClose, customerContext, contextVar
 
   if (!prompt) return null
 
-  const agentColor = AGENT_COLORS[prompt.agentType]
   const agentLabel = AGENT_LABELS[prompt.agentType]
   const availabilityBanner = AVAILABILITY_BANNER[prompt.availability]
   const isArchitect = prompt.mode === 'architect'
@@ -136,12 +134,9 @@ export function PromptModal({ prompt, open, onClose, customerContext, contextVar
         {/* Header */}
         <DialogHeader className="px-6 py-4 border-b border-border/60 shrink-0">
           <div className="flex items-start gap-3">
-            <Badge
-              className="text-white text-[10px] font-semibold uppercase tracking-wide mt-0.5 shrink-0"
-              style={{ backgroundColor: prompt.moduleColor }}
-            >
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-[#5a5a62] mt-1 shrink-0">
               {prompt.moduleTitle}
-            </Badge>
+            </span>
             <div className="flex-1 min-w-0">
               <DialogTitle className="text-base font-semibold leading-snug">
                 {prompt.title}
@@ -156,23 +151,19 @@ export function PromptModal({ prompt, open, onClose, customerContext, contextVar
 
           {/* Agent + mode row */}
           <div className="flex items-center gap-2 mt-2 flex-wrap">
-            <span
-              className="text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center gap-1.5"
-              style={{ backgroundColor: `${agentColor}18`, color: agentColor }}
-            >
-              <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: agentColor }} />
+            <span className="text-[11px] text-[#5a5a62]">
               {agentLabel}
             </span>
 
             {isArchitect && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center gap-1 bg-[var(--harness-blue)]/10 text-[var(--harness-blue)]">
+              <span className="text-[11px] text-[#5a5a62] flex items-center gap-1">
                 <Wrench className="h-3 w-3" />
                 Use in Architect Mode for best results
               </span>
             )}
 
             {isMcp && prompt.mcpRequirements && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center gap-1 bg-amber-500/10 text-amber-700">
+              <span className="text-[11px] text-[#5a5a62] flex items-center gap-1">
                 <Zap className="h-3 w-3" />
                 Requires: {prompt.mcpRequirements.join(', ')} MCP connection
               </span>
@@ -256,7 +247,7 @@ export function PromptModal({ prompt, open, onClose, customerContext, contextVar
                   {filledContent.split(/(\{\{[^}]+\}\})/g).map((part, i) => {
                     if (/^\{\{[^}]+\}\}$/.test(part)) {
                       return (
-                        <mark key={i} className="bg-[var(--harness-blue)]/15 text-[var(--harness-blue)] rounded px-0.5 not-italic font-mono">
+                        <mark key={i} className="bg-[#f4f4f5] text-[#202020] rounded px-0.5 not-italic font-mono">
                           {part}
                         </mark>
                       )
@@ -290,7 +281,7 @@ export function PromptModal({ prompt, open, onClose, customerContext, contextVar
                   </p>
                 )}
                 {isArchitect && (
-                  <p className="text-xs text-[var(--harness-blue)]">
+                  <p className="text-xs text-[#5a5a62]">
                     Tip: Start a new Harness AI chat and type &ldquo;Architect Mode&rdquo; before pasting
                   </p>
                 )}
@@ -304,8 +295,8 @@ export function PromptModal({ prompt, open, onClose, customerContext, contextVar
                 className={cn(
                   'gap-2 min-w-36 transition-all',
                   copied
-                    ? 'bg-green-600 hover:bg-green-700 text-white'
-                    : 'bg-[var(--harness-blue)] hover:bg-[var(--harness-blue-dark)] text-white'
+                    ? 'bg-[#202020] hover:bg-black text-white'
+                    : 'bg-[#111111] hover:bg-black text-white'
                 )}
               >
                 {copied ? (
