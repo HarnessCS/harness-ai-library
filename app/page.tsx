@@ -97,7 +97,7 @@ export default function HomePage() {
   const searchRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    const dismissed = localStorage.getItem('harness-banner-dismissed')
+    const dismissed = localStorage.getItem('harness-banner-dismissed-v2')
     if (!dismissed) setBannerDismissed(false)
     if (new URLSearchParams(window.location.search).get('view') === 'agents') {
       setLibrary('agents')
@@ -111,7 +111,7 @@ export default function HomePage() {
 
   const dismissBanner = () => {
     setBannerDismissed(true)
-    localStorage.setItem('harness-banner-dismissed', '1')
+    localStorage.setItem('harness-banner-dismissed-v2', '1')
   }
 
   useEffect(() => {
@@ -239,11 +239,6 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar library={library} onLibraryChange={setLibraryView} />
 
-      {library === 'agents' ? (
-        <WorkerAgentBrowser />
-      ) : (
-      <>
-      {/* First-run banner */}
       {!bannerDismissed && (
         <div className="bg-white border-b border-[#e6e8ee] px-4 md:px-6 py-3">
           <div className="flex items-start justify-between gap-4 max-w-5xl">
@@ -252,10 +247,19 @@ export default function HomePage() {
               <div>
                 <p className="text-sm font-semibold text-foreground">How to use this library</p>
                 <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-                  Browse prompts → fill in your details → click <strong>Copy Prompt</strong> → paste into the{' '}
-                  <strong>Harness AI</strong> chat panel in your Harness account.{' '}
-                  <span className="font-mono bg-muted px-1 rounded text-[11px]">Architect Mode</span> prompts work best for complex pipelines.{' '}
-                  <span className="font-mono bg-muted px-1 rounded text-[11px]">MCP</span> prompts require a GitHub, Jira, or Datadog MCP integration.
+                  {library === 'agents' ? (
+                    <>
+                      Open a card → copy the agent or pipeline YAML → <strong>Open in Harness</strong> for a marketplace agent, or <strong>Create on Harness</strong> for a custom one.
+                      Your account, org, and project stay in this browser and fill the copied YAML. Clear them beside the search bar to use a different project.
+                    </>
+                  ) : (
+                    <>
+                      Browse prompts → fill in your details → click <strong>Copy Prompt</strong> → paste into the{' '}
+                      <strong>Harness AI</strong> chat panel in your Harness account.{' '}
+                      <span className="font-mono bg-muted px-1 rounded text-[11px]">Architect Mode</span> prompts work best for complex pipelines.{' '}
+                      <span className="font-mono bg-muted px-1 rounded text-[11px]">MCP</span> prompts require a GitHub, Jira, or Datadog MCP integration.
+                    </>
+                  )}
                 </p>
               </div>
             </div>
@@ -270,6 +274,10 @@ export default function HomePage() {
         </div>
       )}
 
+      {library === 'agents' ? (
+        <WorkerAgentBrowser />
+      ) : (
+      <>
       {/* Customer context panel */}
       <ContextPanel onContextChange={setCustomerContext} />
 
