@@ -46,6 +46,10 @@ export function saveScope(scope: HarnessScope) {
   localStorage.setItem(SCOPE_KEY, JSON.stringify(scope))
 }
 
+export function clearScope() {
+  localStorage.removeItem(SCOPE_KEY)
+}
+
 export function scopeComplete(scope: HarnessScope) {
   return Boolean(scope.accountId.trim() && scope.orgId.trim() && scope.projectId.trim())
 }

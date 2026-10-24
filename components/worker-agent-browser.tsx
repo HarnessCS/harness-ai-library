@@ -21,6 +21,7 @@ import {
   emptyScope,
   loadScope,
   saveScope,
+  clearScope,
   scopeComplete,
   applyYamlScope,
   agentConsoleUrl,
@@ -48,6 +49,7 @@ export function WorkerAgentBrowser() {
   const [selected, setSelected] = useState<WorkerAgentRecord | null>(null)
   const [scope, setScope] = useState<HarnessScope>(emptyScope)
   const [needsScope, setNeedsScope] = useState(false)
+  const [scopeMode, setScopeMode] = useState<'link' | 'edit'>('link')
   const [draft, setDraft] = useState<HarnessScope>(emptyScope)
 
   useEffect(() => {
@@ -95,17 +97,31 @@ export function WorkerAgentBrowser() {
     const url = agentConsoleUrl(agent, scope)
     if (!url) {
       setDraft(scope)
+      setScopeMode('link')
       setNeedsScope(true)
       return
     }
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
+  function editScope() {
+    setDraft(scope)
+    setScopeMode('edit')
+    setNeedsScope(true)
+  }
+
+  function unsetScope() {
+    clearScope()
+    setScope(emptyScope)
+    setDraft(emptyScope)
+    setNeedsScope(false)
+  }
+
   function confirmScope() {
-    if (!selected) return
     saveScope(draft)
     setScope(draft)
     setNeedsScope(false)
+    if (scopeMode !== 'link' || !selected) return
     const url = agentConsoleUrl(selected, draft)
     if (url) window.open(url, '_blank', 'noopener,noreferrer')
   }
@@ -173,6 +189,7 @@ export function WorkerAgentBrowser() {
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <div className="sticky top-14 z-30 bg-background/95 backdrop-blur border-b border-border/60 px-4 md:px-6 py-3">
+          <div className="flex flex-wrap items-center gap-3">
           <div className="relative flex-1 max-w-2xl">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -187,6 +204,20 @@ export function WorkerAgentBrowser() {
                 <X className="h-3.5 w-3.5" />
               </button>
             )}
+          </div>
+          {scopeComplete(scope) && (
+            <div className="flex items-center gap-2 min-w-0 text-xs text-[#5a5a62]">
+              <span className="truncate" title={`${scope.accountId} / ${scope.orgId} / ${scope.projectId}`}>
+                {scope.accountId} / {scope.orgId} / {scope.projectId}
+              </span>
+              <button type="button" onClick={editScope} className="shrink-0 font-medium text-[#202020] hover:underline">
+                Change
+              </button>
+              <button type="button" onClick={unsetScope} className="shrink-0 font-medium text-[#202020] hover:underline">
+                Clear
+              </button>
+            </div>
+          )}
           </div>
           {hasActiveFilters && (
             <p className="mt-2 text-[11px] text-muted-foreground">
@@ -275,9 +306,14 @@ export function WorkerAgentBrowser() {
             These stay in this browser. They fill org and project in copied YAML and build the Harness link.
           </p>
           <ScopeFields draft={draft} onChange={setDraft} />
-          <div className="flex justify-end">
+          <div className="flex items-center justify-between gap-3">
+            {scopeMode === 'edit' ? (
+              <Button type="button" variant="outline" className="rounded-[10px]" onClick={unsetScope}>
+                Clear
+              </Button>
+            ) : <span />}
             <Button className="rounded-[10px] bg-[#111111] hover:bg-black text-white" disabled={!scopeComplete(draft)} onClick={confirmScope}>
-              {selected ? harnessActionLabel(selected) : 'Open in Harness'}
+              {scopeMode === 'edit' ? 'Save' : selected ? harnessActionLabel(selected) : 'Save'}
             </Button>
           </div>
         </DialogContent>
