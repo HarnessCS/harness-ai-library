@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/select'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { cn } from '@/lib/utils'
+import { cn, apiPath } from '@/lib/utils'
 
 interface PromptModalProps {
   prompt: Prompt | null
@@ -109,7 +109,7 @@ export function PromptModal({ prompt, open, onClose, customerContext, contextVar
       setCopied(true)
       toast.success('Prompt copied!', { description: 'Your customized prompt is in the clipboard.' })
       if (prompt) {
-        fetch('/api/analytics', {
+        fetch(apiPath('/api/analytics'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'copy', promptId: prompt.id, moduleId: prompt.moduleId }),

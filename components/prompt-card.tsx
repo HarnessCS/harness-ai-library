@@ -9,7 +9,7 @@ import {
   PERSONA_LABELS,
 } from '@/lib/types'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { cn, apiPath } from '@/lib/utils'
 
 interface PromptCardProps {
   prompt: Prompt
@@ -31,7 +31,7 @@ export function PromptCard({ prompt, onClick }: PromptCardProps) {
       await navigator.clipboard.writeText(prompt.content)
       setCopied(true)
       toast.success('Prompt copied!', { description: prompt.title })
-      fetch('/api/analytics', {
+      fetch(apiPath('/api/analytics'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'copy', promptId: prompt.id, moduleId: prompt.moduleId }),
@@ -52,7 +52,7 @@ export function PromptCard({ prompt, onClick }: PromptCardProps) {
           onClick: () => window.open('https://app.harness.io', '_blank'),
         },
       })
-      fetch('/api/analytics', {
+      fetch(apiPath('/api/analytics'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'copy', promptId: prompt.id, moduleId: prompt.moduleId }),
