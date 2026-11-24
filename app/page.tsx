@@ -19,7 +19,7 @@ import {
   SITUATION_LABELS,
 } from '@/lib/types'
 import { getAllPrompts, getModules } from '@/lib/data'
-import { cn } from '@/lib/utils'
+import { cn, apiPath } from '@/lib/utils'
 import { ContextPanel, CONTEXT_VAR_MAP, loadContext } from '@/components/context-panel'
 import { AgentShowcase } from '@/components/agent-showcase'
 import { SituationSelector } from '@/components/situation-selector'
@@ -161,7 +161,7 @@ export default function HomePage() {
     if (q.trim().length > 2) {
       searchTimeout.current = setTimeout(() => {
         const result = filterPrompts(allPrompts, q, selectedModules, selectedAgents, selectedComplexities, selectedStage, selectedSituation)
-        fetch('/api/analytics', {
+        fetch(apiPath('/api/analytics'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'search', searchQuery: q.trim(), resultCount: result.length }),
