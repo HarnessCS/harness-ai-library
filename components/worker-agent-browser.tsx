@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
+import { assetPath } from '@/lib/asset-path'
 import { SDLC_STAGE_LABELS, type SdlcStage } from '@/lib/types'
 import {
   WorkerAgentRecord,
@@ -276,7 +277,7 @@ export function WorkerAgentBrowser() {
                     </span>
                     <span className="flex items-start gap-2">
                       {agent.ownership === 'harness_managed' && (
-                        <img src="/harness-mark.png" alt="" className="mt-0.5 h-4 w-4 shrink-0" />
+                        <img src={assetPath('/harness-mark.png')} alt="" className="mt-0.5 h-4 w-4 shrink-0" />
                       )}
                       <span className="font-semibold text-sm text-foreground leading-snug line-clamp-2">{agent.name}</span>
                     </span>
@@ -361,7 +362,7 @@ function AgentDetail({
             <DialogHeader className="shrink-0">
               <DialogTitle className="flex items-center gap-2">
                 {agent.ownership === 'harness_managed' && (
-                  <img src="/harness-mark.png" alt="" className="h-5 w-5 shrink-0" />
+                  <img src={assetPath('/harness-mark.png')} alt="" className="h-5 w-5 shrink-0" />
                 )}
                 {agent.name}
               </DialogTitle>
