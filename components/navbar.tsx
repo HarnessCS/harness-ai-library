@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { assetPath } from '@/lib/asset-path'
 
 type LibraryView = 'prompts' | 'agents'
 
@@ -17,7 +18,7 @@ export function Navbar({
       <div className="flex h-14 items-center px-4 md:px-6 gap-4">
         {/* Logo + title */}
         <Link href="/" onClick={() => onLibraryChange?.('prompts')} className="flex items-center gap-3 shrink-0">
-          <img src="/harness-wordmark.svg" alt="Harness" width={100} height={22} />
+          <img src={assetPath('/harness-wordmark.svg')} alt="Harness" width={100} height={22} />
           <span className="text-[13px] text-[#5a5a62] font-medium border-l border-[#d9dae5] pl-3">
             AI Library
           </span>

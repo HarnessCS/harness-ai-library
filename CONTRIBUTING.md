@@ -19,7 +19,7 @@ Thank you for helping grow this library! This guide covers everything you need t
 ## Getting started
 
 ```bash
-git clone https://github.com/dewan-ahmed/harness-ai-library.git
+git clone https://github.com/HarnessCS/harness-ai-library.git
 cd harness-ai-library
 npm install
 npm run dev        # http://localhost:3000

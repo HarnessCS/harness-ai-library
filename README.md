@@ -106,7 +106,7 @@ These values auto-populate into matching prompt variables on every prompt.
 ### Installation
 
 ```bash
-git clone https://github.com/dewan-ahmed/harness-ai-library.git
+git clone https://github.com/HarnessCS/harness-ai-library.git
 cd harness-ai-library
 npm install
 ```
@@ -375,7 +375,7 @@ The following Harness AI capabilities are on the roadmap and will be reflected i
 
 ## Contributing
 
-1. Fork https://github.com/dewan-ahmed/harness-ai-library
+1. Fork https://github.com/HarnessCS/harness-ai-library
 2. Branch from `main`. Do not commit directly to `main`
 3. Add prompts using [Adding Prompts](#adding-prompts), or update `data/worker-agents.json` for a worker agent
 4. Run `npm run build` to verify TypeScript compiles cleanly
