@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 import {
-  AgentType, AGENT_LABELS, AGENT_COLORS, AGENT_DESCRIPTIONS,
+  AgentType, AGENT_LABELS, AGENT_DESCRIPTIONS,
   AGENT_AVAILABILITY, AVAILABILITY_LABELS,
 } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -29,7 +29,7 @@ export function AgentShowcase({ agentCounts, selectedAgents, onToggle }: AgentSh
         </h2>
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="flex items-center gap-0.5 text-[12px] font-medium text-[var(--harness-blue)] hover:opacity-70 transition-opacity"
+          className="flex items-center gap-0.5 text-[12px] font-medium text-[#5a5a62] hover:text-[#202020] transition-colors"
         >
           {collapsed ? 'Show' : 'Hide'}
           {collapsed
@@ -43,7 +43,6 @@ export function AgentShowcase({ agentCounts, selectedAgents, onToggle }: AgentSh
       {!collapsed && (
         <div className="flex gap-3 overflow-x-auto px-4 md:px-6 pt-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {AGENT_IDS.map(agentId => {
-            const color = AGENT_COLORS[agentId]
             const isSelected = selectedAgents.includes(agentId)
             const count = agentCounts[agentId] ?? 0
             const availability = AGENT_AVAILABILITY[agentId]
@@ -64,29 +63,18 @@ export function AgentShowcase({ agentCounts, selectedAgents, onToggle }: AgentSh
                   ].join(' '),
                 )}
                 style={isSelected ? {
-                  backgroundColor: `${color}0d`,
-                  boxShadow: `0 0 0 1.5px ${color}70, 0 6px 20px ${color}22`,
+                  boxShadow: '0 0 0 1.5px #202020',
                 } : {}}
               >
                 <div className="p-4 flex flex-col gap-0">
 
                   {/* Agent name + dot */}
                   <div className="flex items-center gap-2 mb-1.5">
-                    <span
-                      className="h-2 w-2 rounded-full shrink-0 transition-transform duration-200 group-hover:scale-110"
-                      style={{ backgroundColor: color }}
-                    />
-                    <span
-                      className="text-[13px] font-semibold leading-tight flex-1 min-w-0 truncate"
-                      style={{ color: isSelected ? color : 'hsl(var(--foreground))' }}
-                    >
+                    <span className="text-[13px] font-semibold leading-tight flex-1 min-w-0 truncate text-[#202020]">
                       {AGENT_LABELS[agentId]}
                     </span>
                     {isComingSoon && (
-                      <span
-                        className="shrink-0 text-[9px] font-semibold px-1.5 py-[3px] rounded-full leading-none"
-                        style={{ backgroundColor: `${color}18`, color }}
-                      >
+                      <span className="shrink-0 text-[9px] font-semibold text-[#5a5a62] leading-none">
                         {AVAILABILITY_LABELS[availability]}
                       </span>
                     )}
@@ -99,10 +87,7 @@ export function AgentShowcase({ agentCounts, selectedAgents, onToggle }: AgentSh
 
                   {/* Prompt count */}
                   <div className="flex items-baseline gap-1">
-                    <span
-                      className="text-[13px] font-semibold tabular-nums"
-                      style={{ color: isSelected ? color : 'hsl(var(--foreground))' }}
-                    >
+                    <span className="text-[13px] font-semibold tabular-nums text-[#202020]">
                       {count}
                     </span>
                     <span className="text-[11px] text-muted-foreground">

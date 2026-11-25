@@ -1,18 +1,31 @@
-# Harness AI Prompt Library
+# Harness AI Library
 
-A curated, searchable library of AI prompts for the Harness platform. Designed for DevOps, FinOps, security, reliability, and platform engineering teams to get the most out of Harness AI agents.
+A searchable library for Harness AI. It holds two catalogs on one page:
+
+- **Prompts** — templates you fill in and paste into the Harness AI chat.
+- **Worker Agents** — agent definitions and the sample pipelines that run them. Copy the YAML, or open the agent in Harness.
+
+The header switch, **Prompts | Worker Agents**, changes the results without leaving the page. Worker Agents is also available at `/?view=agents`.
 
 ---
 
 ## Overview
 
-The Harness AI Prompt Library is a Next.js web application that provides a searchable, filterable catalog of ready-to-use prompts for Harness AI agents. Each prompt is tailored to a specific use case within the software delivery lifecycle — from pipeline creation and cloud cost optimization to incident response and chaos engineering.
+Prompts cover the software delivery lifecycle: pipeline creation, cloud cost, incident response, chaos engineering, and the rest. Each one has `{{variable}}` placeholders. A modal fills those from the customer context panel, then copies the prompt into chat.
 
-Prompts can be customized with runtime variables (project names, environments, cloud providers, etc.) via an interactive modal, then copied directly into any Harness AI chat interface.
+Worker Agents use the same layout as prompts: a search bar, stage filters, and a card grid. A card shows the name and summary. Opening it shows the YAML. **Agent | Pipeline** switches that preview. The clipboard icon copies whichever one is showing. Marketplace agents use **Open in Harness**, which opens that agent in the project. Custom agents use **Create on Harness**, which opens the create page. Both links need an account, org, and project. Those values stay in this browser and also replace `{{orgId}}` and `{{projectId}}` in the copied YAML.
+
+The catalog has 47 worker agents, each paired with one pipeline. Marketplace agents open at `.../worker-agents/{id}?type=system`. Custom agents open at `.../worker-agents?action=create`.
 
 ---
 
 ## Features
+
+### Worker Agents
+- **Same browse layout as prompts** — search, stage filters, and a card grid
+- **Search** across agent name, summary, description, pipeline name, and keywords
+- **Open a card** to preview YAML. **Agent | Pipeline** switches the preview, and the clipboard icon copies what is showing
+- **Open in Harness** opens a marketplace agent in the project. **Create on Harness** opens the custom-agent create page
 
 ### Prompt Discovery
 - **Full-text search** across prompt titles, descriptions, and tags
@@ -65,15 +78,6 @@ A collapsible right-side panel where users configure their environment details o
 
 These values auto-populate into matching prompt variables on every prompt.
 
-### Admin Dashboard (`/admin`)
-A password-protected admin panel with:
-- **Analytics overview** — total copies, total searches, total prompts
-- **Top prompts** — ranked list of most-copied prompts
-- **Module breakdown** — pie chart of copies by Harness module
-- **Copy trend** — line chart of daily copy activity over 30 days
-- **Prompt management** — CRUD interface to create, edit, and delete prompts
-- **Search term tracking** — recent search queries
-
 ---
 
 ## Tech Stack
@@ -90,58 +94,55 @@ A password-protected admin panel with:
 | Notifications | Sonner |
 | Analytics | @vercel/analytics |
 | Runtime | React 19.2.4 |
-| Package Manager | pnpm |
+| Package Manager | npm |
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+
-- pnpm (`npm install -g pnpm`)
+- Node.js 20+
 
 ### Installation
 
 ```bash
-git clone <repository-url>
-cd harness-ai-prompt-library
-pnpm install
+git clone https://github.com/dewan-ahmed/harness-ai-library.git
+cd harness-ai-library
+npm install
 ```
 
 ### Development
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+Open [http://localhost:3000](http://localhost:3000). Choose **Worker Agents** in the header, or open [http://localhost:3000/?view=agents](http://localhost:3000/?view=agents).
 
 ### Build
 
 ```bash
-pnpm build
-pnpm start
+npm run build
+npm start
 ```
 
 ### Lint
 
 ```bash
-pnpm lint
+npm run lint
 ```
 
-No environment variables are required — all prompt data is embedded directly in TypeScript source files.
+No environment variables are required. Prompt content lives in TypeScript. Worker agent and pipeline YAML live in `data/worker-agents.json`.
 
 ---
 
 ## Project Structure
 
 ```
-harness-ai-prompt-library/
+harness-ai-library/
 ├── app/
 │   ├── layout.tsx              # Root layout with theme provider
-│   ├── page.tsx                # Main library page (search, filters, grid)
-│   ├── admin/
-│   │   └── page.tsx            # Admin dashboard with analytics + CRUD
+│   ├── page.tsx                # Prompts view, plus the Worker Agents switch
 │   └── api/
 │       ├── analytics/
 │       │   └── route.ts        # GET/POST analytics events
@@ -152,7 +153,8 @@ harness-ai-prompt-library/
 │   ├── prompt-card.tsx         # Individual prompt card in the grid
 │   ├── prompt-modal.tsx        # Prompt detail modal with variable inputs
 │   ├── context-panel.tsx       # Customer context sidebar
-│   ├── navbar.tsx              # Top navigation bar
+│   ├── navbar.tsx              # Wordmark and Prompts | Worker Agents switch
+│   ├── worker-agent-browser.tsx # Worker agent search, YAML preview, Open in Harness
 │   └── ui/                     # shadcn/ui base components
 ├── lib/
 │   ├── types.ts                # All TypeScript types, enums, and label maps
@@ -160,8 +162,12 @@ harness-ai-prompt-library/
 │   ├── prompt-metadata.ts      # Metadata enrichment + MCP prompts
 │   ├── store.ts                # In-memory data store with CRUD + analytics
 │   ├── analytics.ts            # Client-side analytics helpers
+│   ├── worker-agents.ts        # Search, scope, and Open in Harness links
 │   └── utils.ts                # cn() utility for class merging
-└── public/                     # Static assets
+├── data/
+│   └── worker-agents.json      # Agent YAML, pipeline YAML, and search fields
+└── public/
+    └── harness-wordmark.svg    # Harness 3.0 wordmark
 ```
 
 ---
@@ -243,7 +249,7 @@ The store is in-memory and resets on server restart. It is designed to be swappe
 
 ---
 
-## Agents
+## Prompt agents
 
 | Agent | Status | Description |
 |---|---|---|
@@ -265,6 +271,19 @@ The store is in-memory and resets on server restart. It is designed to be swappe
 | Standard | Direct conversational prompts for the Harness AI chat interface |
 | Architect Mode | Deep research prompts for the DevOps Agent — triggers 3 probing questions before generating a full pipeline design |
 | MCP | Prompts that leverage the Harness MCP server, compatible with VSCode, Cursor, Windsurf, and Claude for Desktop |
+
+---
+
+## Worker agent catalog
+
+`data/worker-agents.json` is one record per agent:
+
+- `agentYaml` — the agent definition shown by default
+- `pipelineYaml` — the sample pipeline, shown from the Pipeline toggle
+- `linkType` — `system` for Harness marketplace agents, `custom` for catalog agents
+- `harnessAgentId` — the id used in a marketplace agent's Open in Harness URL
+
+Account, org, and project IDs are not in the file. The browser stores them under `harness-ai-library-scope` and substitutes `{{accountId}}`, `{{orgId}}`, and `{{projectId}}` at copy time.
 
 ---
 
@@ -337,21 +356,7 @@ The app includes lightweight in-memory analytics:
 - **Search events** — recorded on every search query with result count
 - **View events** — recorded when prompts are opened in the modal
 
-Analytics data is available via `GET /api/analytics` and displayed in the admin dashboard with charts for trends, top prompts, and module breakdowns.
-
----
-
-## Admin Panel
-
-Navigate to `/admin` to access the admin dashboard.
-
-Features:
-- Summary statistics (total copies, searches, prompts)
-- Top 10 most-copied prompts
-- Copy trend line chart (last 30 days)
-- Module breakdown pie chart
-- Full prompt list with edit and delete actions
-- Create new prompts via a form
+Analytics events are recorded in memory through `POST /api/analytics`.
 
 ---
 
@@ -370,10 +375,11 @@ The following Harness AI capabilities are on the roadmap and will be reflected i
 
 ## Contributing
 
-1. Fork the repository
-2. Add your prompts following the steps in [Adding Prompts](#adding-prompts)
-3. Run `pnpm build` to verify TypeScript compiles cleanly
-4. Open a pull request with a description of the new prompts and their use cases
+1. Fork https://github.com/dewan-ahmed/harness-ai-library
+2. Branch from `main`. Do not commit directly to `main`
+3. Add prompts using [Adding Prompts](#adding-prompts), or update `data/worker-agents.json` for a worker agent
+4. Run `npm run build` to verify TypeScript compiles cleanly
+5. Open a pull request describing the prompts or agents you added
 
 ---
 
